@@ -6,7 +6,6 @@ client = TestClient(app)
 
 
 class TestAPI:
-    
     def test_root_endpoint(self):
         response = client.get("/")
         assert response.status_code == 200
@@ -59,18 +58,30 @@ class TestAPI:
 
 
 class TestHealthChecks:
-    
     def test_health_response_structure(self):
         response = client.get("/health")
         data = response.json()
-        required_fields = ["status", "timestamp", "uptime", "environment", "python_version"]
+        required_fields = [
+            "status",
+            "timestamp",
+            "uptime",
+            "environment",
+            "python_version",
+        ]
         for field in required_fields:
             assert field in data
 
     def test_status_response_structure(self):
         response = client.get("/api/status")
         data = response.json()
-        required_fields = ["service", "status", "timestamp", "version", "python_version", "platform"]
+        required_fields = [
+            "service",
+            "status",
+            "timestamp",
+            "version",
+            "python_version",
+            "platform",
+        ]
         for field in required_fields:
             assert field in data
 
@@ -79,10 +90,10 @@ class TestHealthChecks:
 async def test_concurrent_requests():
     import asyncio
     import httpx
-    
+
     async with httpx.AsyncClient(app=app, base_url="http://test") as ac:
         tasks = [ac.get("/health") for _ in range(10)]
         responses = await asyncio.gather(*tasks)
-        
+
     for response in responses:
         assert response.status_code == 200
