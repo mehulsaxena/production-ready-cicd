@@ -1,0 +1,21 @@
+# .flake8
+[flake8]
+max-line-length = 100
+exclude = .git,__pycache__,venv,.venv,.pytest_cache
+ignore = E203,W503
+
+# pytest.ini
+[tool:pytest]
+testpaths = .
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = --strict-markers --disable-warnings
+markers =
+    slow: marks tests as slow
+    integration: marks tests as integration tests
+
+# .bandit
+[bandit]
+exclude_dirs = tests,venv,.venv
+skips = B101,B601
