@@ -1,0 +1,43 @@
+name: Demo CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  demo-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: echo "📦 Install dependencies (Logic stays here)"
+
+    - name: Lint Code
+      run: echo "🔍 Run linter (Logic stays here)"
+
+    - name: Run Tests
+      run: echo "🧪 Run tests (Logic stays here)"
+
+    - name: Security Scan
+      run: echo "🛡️ Security scan (Logic stays here)"
+
+    - name: Build Docker Image
+      run: echo "🐳 Build Docker image (Logic stays here)"
+
+    - name: Push Docker Image
+      run: echo "📤 Push Docker image (Logic stays here)"
+
+    - name: Deploy to Staging
+      run: echo "🚀 Deploy to staging (Logic stays here)"
+
+    - name: Deploy to Production
+      if: github.ref == 'refs/heads/main'
+      run: echo "🌍 Deploy to production (Logic stays here)"
+
+    - name: Notify
+      run: echo "📢 Notify team (Logic stays here)"
