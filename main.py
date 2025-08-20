@@ -96,7 +96,10 @@ async def get_status():
         status="running",
         timestamp=datetime.now().isoformat(),
         version="1.0.0",
-        python_version=f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        python_version=(
+            f"{sys.version_info.major}.{sys.version_info.minor}."
+            f"{sys.version_info.micro}"
+        ),
         platform=platform.platform(),
     )
 
@@ -108,7 +111,11 @@ async def get_metrics():
 
     return {
         "uptime_seconds": uptime_seconds,
-        "uptime_human": f"{uptime_seconds // 3600:.0f}h {(uptime_seconds % 3600) // 60:.0f}m {uptime_seconds % 60:.0f}s",
+        "uptime_human": (
+            f"{uptime_seconds // 3600:.0f}h "
+            f"{(uptime_seconds % 3600) // 60:.0f}m "
+            f"{uptime_seconds % 60:.0f}s"
+        ),
         "memory_info": {"available": "simulation", "used": "simulation"},
         "requests_total": "simulation",
         "python_info": {
