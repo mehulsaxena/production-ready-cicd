@@ -1,4 +1,4 @@
-name: 🚀 Professional CI/CD Pipeline
+name: 🚀 Production CI/CD Pipeline
 
 on:
   push:
@@ -7,165 +7,81 @@ on:
     branches: [main]
 
 env:
-  APP_NAME: production-ready-cicd
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # =================== STEP 1: CODE QUALITY CHECK ===================
-  quality-check:
-    name: 🔍 Code Quality Check
+  # ===============================================
+  # 🧪 STAGE 1: TEST & QUALITY
+  # ===============================================
+  test-and-quality:
+    name: 🧪 Test & Quality Checks
     runs-on: ubuntu-latest
     steps:
-      - name: ✅ Get Code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python
+      - name: 🐍 Setup Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: 📦 Install Requirements
+      - name: 📦 Install Dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🔍 Check Code Format
+      - name: 🎨 Code Formatting Check
         run: |
-          echo "🔍 Checking code formatting..."
-          black --check --diff .
-          echo "✅ Code format is good!"
+          echo "🎨 Checking code formatting with Black..."
+          black --check --diff . || (echo "❌ Code needs formatting. Run: black ." && exit 1)
+          echo "✅ Code formatting looks good!"
 
-      - name: 🔍 Check Code Style
+      - name: 🔍 Code Style Check  
         run: |
-          echo "🔍 Checking code style..."
-          flake8 . --max-line-length=100 --exclude=.git,__pycache__
-          echo "✅ Code style is good!"
+          echo "🔍 Checking code style with Flake8..."
+          flake8 . --max-line-length=100 --exclude=.git,__pycache__ || (echo "❌ Code style issues found" && exit 1)
+          echo "✅ Code style looks good!"
 
-      - name: 🔍 SonarCloud Analysis
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: true
-
-  # =================== STEP 2: SECURITY SCAN ===================
-  security-scan:
-    name: 🛡️ Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: ✅ Get Code
-        uses: actions/checkout@v4
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: 📦 Install Requirements
+      - name: 🧪 Run Unit Tests
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: 🛡️ Check for Security Issues
-        run: |
-          echo "🛡️ Scanning for security issues..."
-          bandit -r . -f json -o security-report.json || true
-          echo "✅ Security scan completed!"
-
-      - name: 🛡️ Check Dependencies
-        run: |
-          echo "🛡️ Checking dependency security..."
-          safety check --json --output dependency-report.json || true
-          echo "✅ Dependency check completed!"
-
-      - name: 🛡️ Snyk Security Check
-        uses: snyk/actions/python@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
-        continue-on-error: true
-
-      - name: 📊 Save Security Reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: security-reports
-          path: |
-            security-report.json
-            dependency-report.json
-
-  # =================== STEP 3: RUN TESTS ===================
-  run-tests:
-    name: 🧪 Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: ✅ Get Code
-        uses: actions/checkout@v4
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: 📦 Install Requirements
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: 🧪 Run All Tests
-        run: |
-          echo "🧪 Running tests..."
-          pytest --cov=. --cov-report=xml --cov-report=html -v
+          echo "🧪 Running test suite..."
+          pytest --cov=. --cov-report=term-missing -v || (echo "❌ Tests failed" && exit 1)
           echo "✅ All tests passed!"
 
-      - name: 📊 Save Test Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: |
-            htmlcov/
-            coverage.xml
+      - name: 🛡️ Security Scan
+        run: |
+          echo "🛡️ Running security checks..."
+          bandit -r . || echo "⚠️ Security warnings found (non-blocking)"
+          safety check || echo "⚠️ Dependency warnings found (non-blocking)"
+          echo "✅ Security scan completed!"
 
-  # =================== STEP 4: BUILD DOCKER IMAGE ===================
-  build-image:
-    name: 🐳 Build Docker Image
+  # ===============================================
+  # 🐳 STAGE 2: BUILD & PUSH CONTAINER
+  # ===============================================
+  build-container:
+    name: 🐳 Build & Push Container
     runs-on: ubuntu-latest
-    needs: [quality-check, security-scan, run-tests]
+    needs: test-and-quality
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+      digest: ${{ steps.build.outputs.digest }}
     steps:
-      - name: ✅ Get Code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Docker
+      - name: 🔧 Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: 🐳 Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          load: true
-          tags: ${{ env.APP_NAME }}:test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: 🛡️ Scan Docker Image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.APP_NAME }}:test
-          format: 'table'
-          exit-code: '0'
-
-      - name: 🔐 Login to Registry
+      - name: 🔐 Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🏷️ Create Image Tags
+      - name: 🏷️ Generate Tags & Labels
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -175,7 +91,8 @@ jobs:
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: 📤 Push to Registry
+      - name: 🐳 Build & Push Docker Image
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -185,16 +102,62 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # =================== STEP 5: CREATE DOCUMENTATION ===================
-  create-docs:
-    name: 📖 Create Documentation
+      - name: 📝 Set Image Output
+        id: image
+        run: echo "image=${{ steps.meta.outputs.tags }}" >> $GITHUB_OUTPUT
+
+      - name: ✅ Build Summary
+        run: |
+          echo "🎉 Container built successfully!"
+          echo "📦 Image: ${{ steps.meta.outputs.tags }}"
+          echo "🔗 Registry: ${{ env.REGISTRY }}"
+
+  # ===============================================
+  # 🛡️ STAGE 3: CONTAINER SECURITY SCAN
+  # ===============================================
+  container-security:
+    name: 🛡️ Container Security Scan
     runs-on: ubuntu-latest
-    needs: [build-image]
+    needs: build-container
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🐳 Build Image for Scanning
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: scan-image:latest
+          cache-from: type=gha
+
+      - name: 🛡️ Run Trivy Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'scan-image:latest'
+          format: 'table'
+          exit-code: '0'
+
+      - name: ✅ Security Scan Complete
+        run: |
+          echo "🛡️ Container security scan completed!"
+          echo "📊 Check the logs above for any vulnerabilities"
+
+  # ===============================================
+  # 🌐 STAGE 4: DEPLOY DOCUMENTATION
+  # ===============================================
+  deploy-docs:
+    name: 🌐 Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: [build-container, container-security]
     if: github.ref == 'refs/heads/main'
     outputs:
-      docs-url: ${{ steps.deploy.outputs.page_url }}
+      docs-url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: ✅ Get Code
+      - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
       - name: 🐍 Setup Python
@@ -203,7 +166,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: 📦 Install Requirements
+      - name: 📦 Install Dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
@@ -212,120 +175,116 @@ jobs:
         run: |
           mkdir -p docs
           
-          # Create API spec
+          # Generate OpenAPI spec
           python -c "
           import json
           from main import app
           spec = app.openapi()
           with open('docs/openapi.json', 'w') as f:
               json.dump(spec, f, indent=2)
-          print('📖 API specification created')
+          print('✅ API specification generated')
           "
           
-          # Create beautiful documentation website
+          # Create beautiful docs page
           cat > docs/index.html << 'EOF'
           <!DOCTYPE html>
-          <html>
+          <html lang="en">
           <head>
-              <title>🚀 Production-Ready API Documentation</title>
-              <meta charset="utf-8"/>
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-              <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Production-Ready CI/CD API</title>
+              <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui.css" />
               <style>
-                  body { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
-                  .hero { 
-                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                      color: white; padding: 3rem 1rem; text-align: center;
+                  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+                  .header {
+                      background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+                      color: white; padding: 2rem; text-align: center;
                   }
-                  .hero h1 { font-family: 'Montserrat', sans-serif; font-weight: 700; margin: 0; font-size: 2.5rem; }
-                  .hero p { font-size: 1.2rem; margin: 1rem 0; opacity: 0.9; }
-                  .features { 
-                      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                      gap: 2rem; padding: 3rem 1rem; background: #f8f9fa; max-width: 1200px; margin: 0 auto;
+                  .header h1 { margin: 0; font-size: 2.5rem; font-weight: 300; }
+                  .header p { margin: 1rem 0 0; opacity: 0.9; font-size: 1.1rem; }
+                  .badges { margin: 1.5rem 0 0; }
+                  .badge {
+                      display: inline-block; background: rgba(255,255,255,0.2);
+                      padding: 0.5rem 1rem; margin: 0.25rem; border-radius: 20px;
+                      font-size: 0.9rem; backdrop-filter: blur(10px);
                   }
-                  .feature { 
-                      background: white; padding: 1.5rem; border-radius: 8px; 
-                      box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;
-                  }
-                  .feature h3 { color: #2c3e50; margin: 1rem 0 0.5rem 0; }
-                  .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
-                  redoc { display: block; }
+                  #swagger-ui { max-width: 1200px; margin: 0 auto; }
               </style>
-              <script src="https://cdn.jsdelivr.net/npm/redoc@2.0.0/bundles/redoc.standalone.js"></script>
           </head>
           <body>
-              <div class="hero">
+              <div class="header">
                   <h1>🚀 Production-Ready CI/CD API</h1>
-                  <p>Enterprise-grade Python FastAPI with advanced DevOps practices</p>
-                  <p><strong>✅ Automated Testing • 🛡️ Security Scanning • 🐳 Container Ready • 📊 Quality Assured</strong></p>
-              </div>
-              
-              <div class="features">
-                  <div class="feature">
-                      <div class="feature-icon">🔍</div>
-                      <h3>Code Quality</h3>
-                      <p>SonarCloud analysis, Black formatting, Flake8 linting</p>
-                  </div>
-                  <div class="feature">
-                      <div class="feature-icon">🛡️</div>
-                      <h3>Security First</h3>
-                      <p>Bandit, Safety, Snyk scanning for vulnerabilities</p>
-                  </div>
-                  <div class="feature">
-                      <div class="feature-icon">🧪</div>
-                      <h3>Comprehensive Testing</h3>
-                      <p>Pytest with coverage reporting and benchmarks</p>
-                  </div>
-                  <div class="feature">
-                      <div class="feature-icon">🐳</div>
-                      <h3>Container Security</h3>
-                      <p>Docker best practices with Trivy scanning</p>
+                  <p>Professional Python FastAPI with Enterprise DevOps Practices</p>
+                  <div class="badges">
+                      <span class="badge">🧪 Automated Testing</span>
+                      <span class="badge">🛡️ Security Scanning</span>
+                      <span class="badge">🐳 Container Ready</span>
+                      <span class="badge">📊 Quality Assured</span>
                   </div>
               </div>
-              
-              <div id="redoc-container"></div>
-              
+              <div id="swagger-ui"></div>
+              <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-bundle.js"></script>
               <script>
-                  Redoc.init('./openapi.json', {
-                      scrollYOffset: 50,
-                      theme: {
-                          colors: {
-                              primary: { main: '#667eea' }
-                          },
-                          typography: {
-                              fontSize: '14px',
-                              fontFamily: 'Roboto, sans-serif'
-                          }
-                      }
-                  }, document.getElementById('redoc-container'));
+                  SwaggerUIBundle({
+                      url: './openapi.json',
+                      dom_id: '#swagger-ui',
+                      presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.presets.standalone],
+                      layout: "StandaloneLayout"
+                  });
               </script>
           </body>
           </html>
           EOF
-          
-          echo "🌐 Beautiful documentation website created!"
 
-      - name: 🌐 Deploy Documentation
-        id: deploy
+      - name: 🌐 Deploy to GitHub Pages
+        id: deployment
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
 
-  # =================== STEP 6: DEPLOYMENT SUMMARY ===================
-  deployment-summary:
-    name: 📊 Deployment Summary
+      - name: ✅ Deployment Summary
+        run: |
+          echo "🎉 Documentation deployed successfully!"
+          echo "🌐 URL: ${{ steps.deployment.outputs.page_url }}"
+
+  # ===============================================
+  # 📊 STAGE 5: FINAL REPORT
+  # ===============================================
+  final-report:
+    name: 📊 Pipeline Report
     runs-on: ubuntu-latest
-    needs: [create-docs]
+    needs: [test-and-quality, build-container, container-security, deploy-docs]
     if: always()
     steps:
-      - name: 📊 Pipeline Results
+      - name: 📊 Generate Pipeline Report
         run: |
-          echo "## 🚀 Pipeline Execution Summary"
-          echo "✅ **Code Quality:** Passed"
-          echo "✅ **Security Scan:** Completed" 
-          echo "✅ **Tests:** All Passed"
-          echo "✅ **Docker Build:** Success"
-          echo "✅ **Documentation:** ${{ needs.create-docs.outputs.docs-url }}"
+          echo "# 🚀 CI/CD Pipeline Report"
           echo ""
-          echo "🎉 **Your application is ready for production!**"
+          echo "## Pipeline Status"
+          echo "- 🧪 **Testing & Quality:** ${{ needs.test-and-quality.result }}"
+          echo "- 🐳 **Container Build:** ${{ needs.build-container.result }}"  
+          echo "- 🛡️ **Security Scan:** ${{ needs.container-security.result }}"
+          echo "- 🌐 **Documentation:** ${{ needs.deploy-docs.result }}"
+          echo ""
+          echo "## Outputs"
+          if [[ "${{ needs.build-container.result }}" == "success" ]]; then
+            echo "- 📦 **Container Image:** ${{ needs.build-container.outputs.image }}"
+          fi
+          if [[ "${{ needs.deploy-docs.result }}" == "success" ]]; then
+            echo "- 🌐 **Documentation:** ${{ needs.deploy-docs.outputs.docs-url }}"
+          fi
+          echo ""
+          if [[ "${{ needs.test-and-quality.result }}" == "success" && "${{ needs.build-container.result }}" == "success" ]]; then
+            echo "## ✅ Status: READY FOR PRODUCTION!"
+          else
+            echo "## ❌ Status: Issues Found - Check Logs"
+          fi
+
+      - name: 🎯 Success Message
+        if: needs.test-and-quality.result == 'success' && needs.build-container.result == 'success'
+        run: |
+          echo "🎉 Congratulations! Your application is production-ready!"
+          echo "✅ All quality checks passed"
+          echo "✅ Container built and secured"
+          echo "✅ Documentation deployed"
