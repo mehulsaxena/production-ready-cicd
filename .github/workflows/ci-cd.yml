@@ -1,4 +1,4 @@
-name: 🚀 Production CI/CD Pipeline
+name: 🚀 Clean CI/CD Pipeline
 
 on:
   push:
@@ -64,9 +64,6 @@ jobs:
     name: 🐳 Build & Push Container
     runs-on: ubuntu-latest
     needs: test-and-quality
-    outputs:
-      image: ${{ steps.image.outputs.image }}
-      digest: ${{ steps.build.outputs.digest }}
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -92,7 +89,6 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: 🐳 Build & Push Docker Image
-        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -102,14 +98,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: 📝 Set Image Output
-        id: image
-        run: echo "image=${{ steps.meta.outputs.tags }}" >> $GITHUB_OUTPUT
-
       - name: ✅ Build Summary
         run: |
           echo "🎉 Container built successfully!"
-          echo "📦 Image: ${{ steps.meta.outputs.tags }}"
+          echo "📦 Image pushed to registry"
           echo "🔗 Registry: ${{ env.REGISTRY }}"
 
   # ===============================================
@@ -154,8 +146,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-container, container-security]
     if: github.ref == 'refs/heads/main'
-    outputs:
-      docs-url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -237,16 +227,15 @@ jobs:
           EOF
 
       - name: 🌐 Deploy to GitHub Pages
-        id: deployment
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
 
-      - name: ✅ Deployment Summary
+      - name: ✅ Deployment Success
         run: |
           echo "🎉 Documentation deployed successfully!"
-          echo "🌐 URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "🌐 Visit: https://mehulsaxena.github.io/production-ready-cicd/"
 
   # ===============================================
   # 📊 STAGE 5: FINAL REPORT
@@ -267,16 +256,9 @@ jobs:
           echo "- 🛡️ **Security Scan:** ${{ needs.container-security.result }}"
           echo "- 🌐 **Documentation:** ${{ needs.deploy-docs.result }}"
           echo ""
-          echo "## Outputs"
-          if [[ "${{ needs.build-container.result }}" == "success" ]]; then
-            echo "- 📦 **Container Image:** ${{ needs.build-container.outputs.image }}"
-          fi
-          if [[ "${{ needs.deploy-docs.result }}" == "success" ]]; then
-            echo "- 🌐 **Documentation:** ${{ needs.deploy-docs.outputs.docs-url }}"
-          fi
-          echo ""
           if [[ "${{ needs.test-and-quality.result }}" == "success" && "${{ needs.build-container.result }}" == "success" ]]; then
             echo "## ✅ Status: READY FOR PRODUCTION!"
+            echo "🌐 **Live Documentation:** https://mehulsaxena.github.io/production-ready-cicd/"
           else
             echo "## ❌ Status: Issues Found - Check Logs"
           fi
@@ -288,3 +270,4 @@ jobs:
           echo "✅ All quality checks passed"
           echo "✅ Container built and secured"
           echo "✅ Documentation deployed"
+          echo "🌐 View your API docs at: https://mehulsaxena.github.io/production-ready-cicd/"
