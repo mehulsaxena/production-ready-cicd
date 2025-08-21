@@ -185,6 +185,11 @@ env:
 ```
 
 ---
+<img width="2080" height="1287" alt="image" src="https://github.com/user-attachments/assets/1734c799-bed1-44ed-8cfc-ef74a6dc478c" />
+<img width="1613" height="1290" alt="image" src="https://github.com/user-attachments/assets/be86c062-1d43-4461-955b-ffd894be40e6" />
+<img width="2525" height="522" alt="image" src="https://github.com/user-attachments/assets/8cfb2783-a1d4-4e17-9e9f-070f36e3b238" />
+
+
 
 ## 📊 Features & Tools
 
