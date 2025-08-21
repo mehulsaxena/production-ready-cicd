@@ -1,420 +1,219 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    line-height: 1.6;
-    color: #333;
-}
-
-.header {
-    background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
-    color: white;
-    padding: 3rem 1rem;
-    text-align: center;
-}
-
-.header h1 {
-    font-size: 3rem;
-    font-weight: 300;
-    margin-bottom: 1rem;
-}
-
-.header p {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    margin-bottom: 2rem;
-}
-
-.badges {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.badge {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.8rem 1.5rem;
-    border-radius: 25px;
-    font-weight: 500;
-    backdrop-filter: blur(10px);
-    transition: transform 0.3s ease;
-}
-
-.badge:hover {
-    transform: translateY(-2px);
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
-}
-
-.stat-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
-
-.stat-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.stat-title {
-    font-size: 1.3rem;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-
-.stat-desc {
-    color: #666;
-    font-size: 0.95rem;
-}
-
-.api-section {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    margin: 2rem 0;
-    overflow: hidden;
-}
-
-.section-header {
-    background: #f8f9fa;
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.section-header h2 {
-    color: #2c3e50;
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.endpoint {
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid #f1f3f4;
-    transition: background-color 0.3s ease;
-}
-
-.endpoint:hover {
-    background-color: #f8f9fa;
-}
-
-.endpoint:last-child {
-    border-bottom: none;
-}
-
-.method {
-    display: inline-block;
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 0.8rem;
-    margin-right: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.get {
-    background: #e3f2fd;
-    color: #1976d2;
-    border: 1px solid #bbdefb;
-}
-
-.path {
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 1.1rem;
-    color: #2c3e50;
-    font-weight: 600;
-    background: #f8f9fa;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-}
-
-.description {
-    color: #666;
-    margin: 0.8rem 0;
-    font-size: 0.95rem;
-}
-
-.response {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-    border-left: 4px solid #2196F3;
-}
-
-.response-title {
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.json {
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 0.85rem;
-    color: #2c3e50;
-    background: white;
-    padding: 1rem;
-    border-radius: 4px;
-    border: 1px solid #e9ecef;
-    white-space: pre-wrap;
-    overflow-x: auto;
-}
-
-.footer {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    color: white;
-    padding: 3rem 2rem 2rem;
-    margin-top: 3rem;
-}
-
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.author-section {
-    margin-bottom: 2rem;
-}
-
-.author-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.author-header h3 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    color: #21CBF3;
-}
-
-.certification {
-    font-size: 1.1rem;
-    color: #f39c12;
-    font-weight: 600;
-    margin: 0;
-}
-
-.author-bio {
-    text-align: center;
-    margin: 2rem 0;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.author-bio p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    opacity: 0.9;
-}
-
-.expertise-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
-}
-
-.expertise-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.expertise-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-}
-
-.expertise-content h4 {
-    margin: 0 0 0.5rem 0;
-    color: #21CBF3;
-    font-size: 1.1rem;
-}
-
-.expertise-content p {
-    margin: 0;
-    opacity: 0.8;
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
-
-.contact-section {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 2rem;
-    border-radius: 12px;
-    margin: 2rem 0;
-    text-align: center;
-}
-
-.contact-section h4 {
-    color: #21CBF3;
-    margin-bottom: 1rem;
-    font-size: 1.3rem;
-}
-
-.contact-section p {
-    margin-bottom: 1.5rem;
-    opacity: 0.9;
-}
-
-.contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.contact-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-}
-
-.contact-icon {
-    font-size: 1.2rem;
-}
-
-.contact-item a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.contact-item a:hover {
-    color: #21CBF3;
-}
-
-.project-info {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 2rem;
-    text-align: center;
-}
-
-.project-links {
-    margin-bottom: 1rem;
-}
-
-.project-links p {
-    margin: 0.5rem 0;
-    opacity: 0.8;
-}
-
-.link-icon {
-    margin-right: 0.5rem;
-}
-
-.project-links strong {
-    color: #21CBF3;
-}
-
-.built-with {
-    opacity: 0.7;
-}
-
-.built-with p {
-    margin: 0;
-    font-style: italic;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .header h1 {
-        font-size: 2rem;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production-Ready CI/CD API</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Security Production-Ready CI/CD Pipeline</h1>
+        <p>Enterprise-Grade Python FastAPI with Advanced Security & DevOps Practices</p>
+        <div class="badges">
+            <span class="badge">🧪 Automated Testing</span>
+            <span class="badge">🛡️ Multi-Layer Security</span>
+            <span class="badge">🐳 Container Security</span>
+            <span class="badge">📊 Quality Assured</span>
+            <span class="badge">🔐 Production Hardened</span>
+        </div>
+    </div>
     
-    .header p {
-        font-size: 1rem;
-    }
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">🔍</div>
+                <div class="stat-title">Code Quality</div>
+                <div class="stat-desc">Black formatting, Flake8 linting, comprehensive testing</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔐</div>
+                <div class="stat-title">Security First</div>
+                <div class="stat-desc">Multi-layer security with Bandit, Safety, Trivy vulnerability scanning</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🐳</div>
+                <div class="stat-title">Container Ready</div>
+                <div class="stat-desc">Docker optimized with security scanning</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-title">High Performance</div>
+                <div class="stat-desc">FastAPI async capabilities with monitoring</div>
+            </div>
+        </div>
+        
+        <div class="api-section">
+            <div class="section-header">
+                <h2>🔗 API Endpoints</h2>
+            </div>
+            
+            <div class="endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="path">/</span>
+                </div>
+                <div class="description">Get API information, features, and tech stack overview</div>
+                <div class="response">
+                    <div class="response-title">Response Example:</div>
+                    <div class="json">{
+  "message": "🚀 Professional Python CI/CD Demo API",
+  "version": "1.0.0",
+  "features": ["Automated Testing", "Security Scanning", "Container Ready"],
+  "tech_stack": ["Python 3.11+", "FastAPI", "Docker", "GitHub Actions"]
+}</div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="path">/health</span>
+                </div>
+                <div class="description">Health check endpoint with uptime and system information</div>
+                <div class="response">
+                    <div class="response-title">Response Example:</div>
+                    <div class="json">{
+  "status": "healthy",
+  "timestamp": "2025-08-21T14:30:00Z",
+  "uptime": 3600.5,
+  "environment": "production",
+  "python_version": "3.11.0"
+}</div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="path">/api/status</span>
+                </div>
+                <div class="description">Service status with detailed system information</div>
+                <div class="response">
+                    <div class="response-title">Response Example:</div>
+                    <div class="json">{
+  "service": "python-demo-app",
+  "status": "running",
+  "version": "1.0.0",
+  "python_version": "3.11.0",
+  "platform": "Linux-x86_64"
+}</div>
+                </div>
+            </div>
+            
+            <div class="endpoint">
+                <div>
+                    <span class="method get">GET</span>
+                    <span class="path">/api/metrics</span>
+                </div>
+                <div class="description">Performance metrics and system statistics</div>
+                <div class="response">
+                    <div class="response-title">Response Example:</div>
+                    <div class="json">{
+  "uptime_seconds": 3600.5,
+  "uptime_human": "1h 0m 0s",
+  "python_info": {
+    "version": "3.11.0",
+    "platform": "Linux-x86_64"
+  }
+}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="api-section">
+            <div class="section-header">
+                <h2>🚀 DevOps Pipeline Features</h2>
+            </div>
+            <div class="endpoint">
+                <div style="padding: 1rem 0;">
+                    <h3>✅ Enterprise Testing</h3>
+                    <p>Comprehensive test suite with pytest, coverage reporting, and continuous quality assurance</p>
+                    
+                    <h3 style="margin-top: 2rem;">🔐 Advanced Security</h3>
+                    <p>Multi-layer security architecture with Bandit, Safety, Trivy vulnerability scanning, and container hardening</p>
+                    
+                    <h3 style="margin-top: 2rem;">🐳 Production Security</h3>
+                    <p>Docker security best practices with vulnerability scanning, non-root execution, and optimized builds</p>
+                    
+                    <h3 style="margin-top: 2rem;">📊 Quality Excellence</h3>
+                    <p>Code formatting with Black, linting with Flake8, security scanning, and continuous monitoring</p>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    .badges {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .container {
-        padding: 1rem;
-    }
-    
-    .stats {
-        grid-template-columns: 1fr;
-    }
-    
-    .endpoint {
-        padding: 1rem;
-    }
-    
-    .method {
-        display: block;
-        margin-bottom: 0.5rem;
-        text-align: center;
-        width: fit-content;
-    }
-    
-    .footer {
-        padding: 2rem 1rem;
-    }
-    
-    .author-header h3 {
-        font-size: 1.5rem;
-    }
-    
-    .expertise-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .contact-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .expertise-item {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .expertise-icon {
-        margin-bottom: 0.5rem;
-    }
-}
+    <div class="footer">
+        <div class="footer-content">
+            <div class="author-section">
+                <div class="author-header">
+                    <h3>👨‍💻 Mehul Saxena</h3>
+                    <p class="certification">🏅 AWS Certified Solutions Architect – Professional</p>
+                </div>
+                
+                <div class="author-bio">
+                    <p>Passionate Cloud & DevOps Engineer specializing in scalable infrastructure, security-first architecture, and enterprise-grade CI/CD automation. I help businesses transform their development workflows and build robust, secure, production-ready systems.</p>
+                </div>
+                
+                <div class="expertise-grid">
+                    <div class="expertise-item">
+                        <div class="expertise-icon">🏗️</div>
+                        <div class="expertise-content">
+                            <h4>Cloud Architecture</h4>
+                            <p>AWS Solutions Design, Multi-cloud Strategies, Cost Optimization</p>
+                        </div>
+                    </div>
+                    <div class="expertise-item">
+                        <div class="expertise-icon">🔄</div>
+                        <div class="expertise-content">
+                            <h4>DevOps & Security</h4>
+                            <p>CI/CD Automation, Container Security, Infrastructure as Code</p>
+                        </div>
+                    </div>
+                    <div class="expertise-item">
+                        <div class="expertise-icon">🚀</div>
+                        <div class="expertise-content">
+                            <h4>Consulting & Training</h4>
+                            <p>Technical Audits, Team Mentoring, Best Practices Implementation</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-section">
+                    <h4>🤝 Let's Connect & Collaborate</h4>
+                    <p>Open for freelance projects, collaboration opportunities, and technical consulting</p>
+                    
+                    <div class="contact-grid">
+                        <div class="contact-item">
+                            <span class="contact-icon">📱</span>
+                            <a href="tel:+919639715879">+91 9639715879</a>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">✉️</span>
+                            <a href="mailto:Mehulsaxenaa@gmail.com">Mehulsaxenaa@gmail.com</a>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">💼</span>
+                            <a href="https://www.linkedin.com/in/mehul-saxena-cloud-engineer/" target="_blank">LinkedIn Profile</a>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">🔗</span>
+                            <a href="https://github.com/mehulsaxena/production-ready-cicd" target="_blank">GitHub Repository</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-info">
+                <div class="project-links">
+                    <p><span class="link-icon">🔗</span> <strong>Repository:</strong> mehulsaxena/production-ready-cicd</p>
+                    <p><span class="link-icon">🐳</span> <strong>Container:</strong> ghcr.io/mehulsaxena/production-ready-cicd</p>
+                </div>
+                <div class="built-with">
+                    <p>Built with ❤️ using Python, FastAPI, Docker & GitHub Actions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
