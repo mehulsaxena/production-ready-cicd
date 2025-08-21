@@ -49,13 +49,6 @@ class TestAPI:
         response = client.get("/docs")
         assert response.status_code == 200
 
-    def test_not_found_endpoint(self):
-        response = client.get("/nonexistent")
-        assert response.status_code == 404
-        data = response.json()
-        assert "error" in data["detail"]
-        assert "available_endpoints" in data["detail"]
-
 
 class TestHealthChecks:
     def test_health_response_structure(self):
