@@ -39,8 +39,10 @@
         SwaggerUIBundle({
             url: './openapi.json',
             dom_id: '#swagger-ui',
-            presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.presets.standalone],
-            layout: "StandaloneLayout"
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.presets.standalone
+            ]
         });
     </script>
 </body>
