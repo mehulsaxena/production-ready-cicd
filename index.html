@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production-Ready CI/CD API</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui.css" />
+    <style>
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            color: white; padding: 2rem; text-align: center;
+        }
+        .header h1 { margin: 0; font-size: 2.5rem; font-weight: 300; }
+        .header p { margin: 1rem 0 0; opacity: 0.9; font-size: 1.1rem; }
+        .badges { margin: 1.5rem 0 0; }
+        .badge {
+            display: inline-block; background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem; margin: 0.25rem; border-radius: 20px;
+            font-size: 0.9rem; backdrop-filter: blur(10px);
+        }
+        #swagger-ui { max-width: 1200px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Production-Ready CI/CD API</h1>
+        <p>Professional Python FastAPI with Enterprise DevOps Practices</p>
+        <div class="badges">
+            <span class="badge">🧪 Automated Testing</span>
+            <span class="badge">🛡️ Security Scanning</span>
+            <span class="badge">🐳 Container Ready</span>
+            <span class="badge">📊 Quality Assured</span>
+        </div>
+    </div>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-bundle.js"></script>
+    <script>
+        SwaggerUIBundle({
+            url: './openapi.json',
+            dom_id: '#swagger-ui',
+            presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.presets.standalone],
+            layout: "StandaloneLayout"
+        });
+    </script>
+</body>
+</html>
