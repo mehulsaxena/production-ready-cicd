@@ -188,20 +188,175 @@ body {
 }
 
 .footer {
-    background: #2c3e50;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     color: white;
-    text-align: center;
-    padding: 2rem;
+    padding: 3rem 2rem 2rem;
     margin-top: 3rem;
 }
 
-.footer p {
-    margin: 0.5rem 0;
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.author-section {
+    margin-bottom: 2rem;
+}
+
+.author-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.author-header h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #21CBF3;
+}
+
+.certification {
+    font-size: 1.1rem;
+    color: #f39c12;
+    font-weight: 600;
+    margin: 0;
+}
+
+.author-bio {
+    text-align: center;
+    margin: 2rem 0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.author-bio p {
+    font-size: 1.1rem;
+    line-height: 1.8;
     opacity: 0.9;
 }
 
-.footer strong {
+.expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.expertise-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.expertise-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.expertise-content h4 {
+    margin: 0 0 0.5rem 0;
     color: #21CBF3;
+    font-size: 1.1rem;
+}
+
+.expertise-content p {
+    margin: 0;
+    opacity: 0.8;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.contact-section {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.contact-section h4 {
+    color: #21CBF3;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.contact-section p {
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.contact-icon {
+    font-size: 1.2rem;
+}
+
+.contact-item a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: #21CBF3;
+}
+
+.project-info {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.project-links {
+    margin-bottom: 1rem;
+}
+
+.project-links p {
+    margin: 0.5rem 0;
+    opacity: 0.8;
+}
+
+.link-icon {
+    margin-right: 0.5rem;
+}
+
+.project-links strong {
+    color: #21CBF3;
+}
+
+.built-with {
+    opacity: 0.7;
+}
+
+.built-with p {
+    margin: 0;
+    font-style: italic;
 }
 
 /* Responsive Design */
@@ -236,5 +391,30 @@ body {
         margin-bottom: 0.5rem;
         text-align: center;
         width: fit-content;
+    }
+    
+    .footer {
+        padding: 2rem 1rem;
+    }
+    
+    .author-header h3 {
+        font-size: 1.5rem;
+    }
+    
+    .expertise-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .expertise-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .expertise-icon {
+        margin-bottom: 0.5rem;
     }
 }
