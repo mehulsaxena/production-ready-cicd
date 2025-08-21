@@ -37,6 +37,7 @@ app = FastAPI(
     title="Professional CI/CD Demo API",
     description="A modern Python FastAPI application showcasing DevOps best practices",
     version="1.0.0",
+    openapi_version="3.0.2",
     docs_url="/docs",
     redoc_url="/redoc",
 )
